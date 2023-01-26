@@ -233,19 +233,6 @@ try:
                 gtCountry = decode(result['gt_country'])
                 gtRegion = decode(result['gt_region'])
                 
-                '''
-                gtName = result['gt_name']
-                mainPageId = result['page_id']
-                mainPageTitle = result['page_title']
-                mainPageLen = result['page_len']
-                gtId = result['gt_id']
-                gtLat = result['gt_lat']
-                gtLon = result['gt_lon']
-                gtDim = result['gt_dim']
-                gtType = result['gt_type']
-                gtCountry = result['gt_country']
-                gtRegion = result['gt_region']
-                '''
                 ### Insert alternate names from wiki title:
                 indexMainLocations, uniqueMainLocs, indexAlternateNames, uniqueAltnames = insertIntoDB(mainPageTitle, cursorGaz, indexMainLocations, uniqueMainLocs, indexAlternateNames, uniqueAltnames, dWikititleGeo, dGeoMaininfo, dWikititleAltname, mainPageId, mainPageTitle, gtId, mainPageLen, gtLat, gtLon, gtDim, gtType, gtCountry, gtRegion, "wikimain")
                 ### Insert alternate names from wiki title:
