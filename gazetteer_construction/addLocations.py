@@ -172,9 +172,18 @@ def insertIntoDB(newAltname, cursorGaz, indexMainLocations, uniqueMainLocs, inde
 
     return indexMainLocations, uniqueMainLocs, indexAlternateNames, uniqueAltnames
 
+
+def decode(value):
+    if value is not None:
+        return value.decode() if type(value) == bytearray else value
+    else:
+        return None
+
+
 wikiDB = None
 gazDB = None
 try:
+   
     wikiDB = mysql.connector.connect(
             host='localhost',
             database='wiki_db',
@@ -186,6 +195,8 @@ try:
             database='wikiGazetteer',
             user='testGazetteer',
             password='1234')
+
+
     if wikiDB.is_connected() and gazDB.is_connected():
         cursor = wikiDB.cursor(dictionary=True)
         cursorGaz = gazDB.cursor(dictionary=True)
@@ -206,7 +217,23 @@ try:
         filter_out = ['_meridian_', '_parallel_']
 
         for result in results:
-            if not any(substring in result['page_title'] for substring in filter_out):
+
+            mainPageTitle = decode(result['page_title'])
+
+            if not any(substring in mainPageTitle for substring in filter_out):
+
+                gtName = decode(result['gt_name'])
+                mainPageId = decode(result['page_id'])
+                mainPageLen = decode(result['page_len'])
+                gtId = decode(result['gt_id'])
+                gtLat = decode(result['gt_lat'])
+                gtLon = decode(result['gt_lon'])
+                gtDim = decode(result['gt_dim'])
+                gtType = decode(result['gt_type'])
+                gtCountry = decode(result['gt_country'])
+                gtRegion = decode(result['gt_region'])
+                
+                '''
                 gtName = result['gt_name']
                 mainPageId = result['page_id']
                 mainPageTitle = result['page_title']
@@ -218,7 +245,7 @@ try:
                 gtType = result['gt_type']
                 gtCountry = result['gt_country']
                 gtRegion = result['gt_region']
-
+                '''
                 ### Insert alternate names from wiki title:
                 indexMainLocations, uniqueMainLocs, indexAlternateNames, uniqueAltnames = insertIntoDB(mainPageTitle, cursorGaz, indexMainLocations, uniqueMainLocs, indexAlternateNames, uniqueAltnames, dWikititleGeo, dGeoMaininfo, dWikititleAltname, mainPageId, mainPageTitle, gtId, mainPageLen, gtLat, gtLon, gtDim, gtType, gtCountry, gtRegion, "wikimain")
                 ### Insert alternate names from wiki title:
