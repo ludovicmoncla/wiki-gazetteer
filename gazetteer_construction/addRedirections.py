@@ -55,6 +55,12 @@ def insertRedirectIntoDB(alreadyAddedAltnames, lengthAltnames, redirectPageTitle
                 alreadyAddedAltnames[altMainId] = [cleanedRedirect.lower()]
     return alreadyAddedAltnames, lengthAltnames
 
+def decode(value):
+    if value is not None:
+        return value.decode() if type(value) == bytearray else value
+    else:
+        return None
+
 # Control query size at each iteration:
 movingLimit = 0
 commitAt = 10000
@@ -63,6 +69,7 @@ dictRedirects = dict()
 alreadyAddedLocations = dict()
 alreadyAddedAltnames = dict()
 try:
+    
     wikiDB = mysql.connector.connect(
             host='localhost',
             database='wiki_db',
@@ -74,6 +81,8 @@ try:
             database='wikiGazetteer',
             user='testGazetteer',
             password='1234')
+
+
     if wikiDB.is_connected() and gazDB.is_connected():
         cursor = wikiDB.cursor(dictionary=True)
         cursorGaz = gazDB.cursor(dictionary=True)
@@ -127,8 +136,8 @@ try:
         print("Query joining page and redirect tables executed.")
 
         for result in results:
-            redirectPageTitle = result['redirect_page_title']
-            redirectMainTitle = result['redirect_main_title']
+            redirectPageTitle = decode(result['redirect_page_title'])
+            redirectMainTitle = decode(result['redirect_main_title'])
 
             if redirectMainTitle in alreadyAddedLocations:
                 altMainId = alreadyAddedLocations[redirectMainTitle][0]
